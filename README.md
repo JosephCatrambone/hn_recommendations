@@ -58,11 +58,15 @@ Deliverables
 
 Game Plan - Day 1
 
-We need a UI that's reasonable and straightforward.  I don't want to split off a frontend and backend component because it makes iterating on the project slower, makes it harder to ship, and we really don't need the things that client-side rendering will offer to us.  Something like Gradio seems like a good option.
-The backend seems like a basic recommender system.  If I don't want to train a model (in the four hours I have to complete), then I could do something simple like use a pre-made embedding model and a dot-product between the user vector and the articles.
+FastAPI or Flask: probably FastAPI so it's easier to define models and we can get the OpenAPI.json to make quick/easy frontend bits.
+Basic recommender system for backend.
+Easy: Don't train a model; dot product between input text and each article. Fetch API at time-of-use. (No DB here.)
+Medium: Don't train a model; prefetch and store vectors with pre-made embedding model.
+Advanced: Train a quick mapping model between the person embedding and the story embedding.  
 
 Steps:
-- Pull 500 articles from HN.
-- Make a UI with gradio that can share the top 500 in some order.  Better to get the data showing early.
-- Write the headlines and links to a database (postgres or sqlite with pgvec?) with embeddings.
-- Perform actual sorting -- if dot-product between all the top 500 is too slow, we should do a prefilter with BV25 and then a smarter dot afterwards.
+- Get cozy with the HN API in a notebook.  Pull and store 500 articles in a DB.  We can use SQLite for ease of distribution but this should be abstracted out so we can swap it for Postgres.
+- Checkpoint: can we do basic keyword matching?
+- Migrate database to add embeddings.
+- Checkpoint: can we do ballpark embedding matching?  How well does the user embedding map to articles?
+- Perform actual sorting and ranking on the DB side -- if dot-product between all the top 500 is too slow, we should do a prefilter with BM25 and then a smarter dot afterwards.
